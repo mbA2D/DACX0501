@@ -97,8 +97,7 @@ void DACX0501::set_dac(float voltage)
 {
 	dacX0501_dac_reg dac_reg;
 	dac_reg.reg.reg_16 = _convert_voltage_to_dac_code(voltage);
-	Serial.print("dac code written: ");
-	Serial.println(dac_reg.reg.reg_16);
+	
 	_write_register(DACX0501_COMMAND_DAC, dac_reg.reg);
 }
 
