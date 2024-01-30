@@ -97,7 +97,8 @@ void DACX0501::set_dac(float voltage)
 {
 	dacX0501_dac_reg dac_reg;
 	dac_reg.reg.reg_16 = _convert_voltage_to_dac_code(voltage);
-	
+	Serial.print("dac code written: ");
+	Serial.println(dac_reg.reg.reg_16);
 	_write_register(DACX0501_COMMAND_DAC, dac_reg.reg);
 }
 
@@ -120,25 +121,25 @@ uint16_t DACX0501::_convert_voltage_to_dac_code(float voltage)
 	{
 		voltage = 0.0;
 	}
-	else if (voltage >= _ref_v*float(_buf_gain)/float(_ref_div))
+	else if (voltage >= _ref_v * float(_buf_gain) / float(_ref_div))
 	{
-		voltage = _ref_v * _buf_gain / float(_ref_div);
+		voltage = _ref_v * float(_buf_gain) / float(_ref_div);
 	}
 	
 	uint32_t code = uint32_t((voltage * float(uint32_t(1)<<_num_bits) * float(_ref_div) / float(_ref_v) / float(_buf_gain)) + 0.5); //+0.5 to round truncate to nearest int
-	if (code >= (uint16_t(1<<_num_bits) -1))
+	if (code >= (uint32_t(1<<_num_bits) -1))
 	{
-		code = (uint16_t(1<<_num_bits) -1);
+		code = (uint32_t(1<<_num_bits) -1);
 	}
 	return uint16_t(code);
 }
 
-uint16_t DACX0501::_convert_dac_code_to_voltage(uint16_t dac_code)
+float DACX0501::_convert_dac_code_to_voltage(uint16_t dac_code)
 {
 	//vout = DAC_DATA / 2^N * VREFIO / DIV * GAIN
 	//DAC_DATA = VOUT * 2^N * DIV / VREFIO / GAIN
 	
-	return (float(dac_code) / float(uint32_t(1)<<_num_bits) * float(_ref_v) / float(_ref_div) * float(_buf_gain));
+	return (float(dac_code) * float(_ref_v) * float(_buf_gain) / (float(uint32_t(1)<<_num_bits) * float(_ref_div)));
 }
 
 void DACX0501::shut_down_dac(bool status)

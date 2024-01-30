@@ -147,12 +147,12 @@ class DACX0501
 		
 		uint16_t get_dev_id();
 		
-	
-	private:
 		uint16_t _read_reg(uint8_t reg); //reads and returns the requested register
+
+	private:
 		void _write_register(uint8_t command_byte, dacX0501_reg reg);
 		uint16_t _convert_voltage_to_dac_code(float voltage);
-		uint16_t _convert_dac_code_to_voltage(uint16_t dac_code);
+		float _convert_dac_code_to_voltage(uint16_t dac_code);
 		uint8_t _wire_request_from(uint8_t num_bytes, bool stop);
 
 		uint8_t _addr;

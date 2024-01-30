@@ -6,8 +6,8 @@ const float sine_wave_points[] = {0.0, 0.15643447, 0.30901699, 0.4539905, 0.5877
 const uint8_t num_sine_table_points = 10;
 
 const float frequency_hz = 50; //max frequency is about 50Hz (limited by I2C transaction time and processing time)
-const float amplitude = 2.0;
-const float offset = 2.0;
+const float amplitude = 1.0;
+const float offset = 3.0;
 
 #define MAX_V 5.0
 #define MIN_V 0.0
@@ -19,10 +19,14 @@ float voltage;
 void setup()
 {
 	Serial.begin(115200);
+	Wire.begin();
+	delay(2000); //delay so you can see serial output with STM32
+
 	Serial.println("DACX0501 Sine Wave Example");
 	
 	dac.init(0x48);
 	dac.shut_down_ref(false);
+	dac.shut_down_dac(false);
 	Serial.println("DAC Started");
 	Serial.println("Ref ON");
 	
